@@ -1,0 +1,186 @@
+from PyQt5 import QtCore, QtGui, QtWidgets
+import sys, MySQLdb, datetime
+
+
+class Ui_MainWindow(object):
+
+    def loaddata(self):
+        connection = MySQLdb.connect('127.0.0.1', 'root', '','inv_bill_mgmt')
+        cursor = connection.cursor()
+        sql = "SELECT * FROM inventory_maincommit"
+        cursor.execute(sql)
+        results = cursor.fetchall()
+        self.tableWidget.setRowCount(0)
+        for r,d in enumerate(results):
+            self.tableWidget.insertRow(r)
+            for c,cd in enumerate(d):
+                self.tableWidget.setItem(r,c,QtWidgets.QTableWidgetItem(str(cd)))
+                #a = self.dataTable.item(0,3).text()
+                #b = self.dataTable.item(0,4).text()
+                #self.dataTable.setItem(str(int(a)*int(b)))
+        cursor.close()
+
+
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(1045, 741)
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.widget = QtWidgets.QWidget(self.centralwidget)
+        self.widget.setGeometry(QtCore.QRect(60, 10, 931, 31))
+        self.widget.setObjectName("widget")
+        self.label = QtWidgets.QLabel(self.widget)
+        self.label.setGeometry(QtCore.QRect(0, 0, 71, 31))
+        self.label.setObjectName("label")
+        self.username_Label = QtWidgets.QLabel(self.widget)
+        self.username_Label.setGeometry(QtCore.QRect(70, 0, 111, 31))
+        self.username_Label.setObjectName("username_Label")
+        self.timeDate = QtWidgets.QLabel(self.widget)
+        self.timeDate.setGeometry(QtCore.QRect(766, 0, 161, 31))
+        self.timeDate.setObjectName("timeDate")
+        self.frame = QtWidgets.QFrame(self.centralwidget)
+        self.frame.setGeometry(QtCore.QRect(70, 470, 921, 31))
+        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame.setObjectName("frame")
+        self.sno_auto = QtWidgets.QLineEdit(self.frame)
+        self.sno_auto.setGeometry(QtCore.QRect(0, 0, 81, 31))
+        self.sno_auto.setObjectName("sno_auto")
+        self.prodId = QtWidgets.QLineEdit(self.frame)
+        self.prodId.setGeometry(QtCore.QRect(80, 0, 250, 31))
+        self.prodId.setObjectName("prodNameEnter")
+
+        self.prodNameEnter = QtWidgets.QLineEdit(self.frame)
+        self.prodNameEnter.setGeometry(QtCore.QRect(250, 0, 400, 31))
+        self.prodNameEnter.setObjectName("prodNameEnter")
+
+
+        self.QuantEdit = QtWidgets.QLineEdit(self.frame)
+        self.QuantEdit.setGeometry(QtCore.QRect(580, 0, 151, 31))
+        self.QuantEdit.setObjectName("QuantEdit")
+        self.PPerProd = QtWidgets.QLineEdit(self.frame)
+        self.PPerProd.setGeometry(QtCore.QRect(730, 0, 191, 31))
+        self.PPerProd.setObjectName("PPerProd")
+        self.InventoryUpdate = QtWidgets.QPushButton(self.centralwidget)
+        self.InventoryUpdate.setGeometry(QtCore.QRect(840, 520, 141, 51))
+        self.InventoryUpdate.setObjectName("InventoryUpdate")
+        self.InventoryUpdate.clicked.connect(self.insertInto)
+        self.remProduct = QtWidgets.QPushButton(self.centralwidget)
+        self.remProduct.setGeometry(QtCore.QRect(70, 520, 171, 51))
+        self.remProduct.setObjectName("remProduct")
+        self.scrollArea = QtWidgets.QScrollArea(self.centralwidget)
+        self.scrollArea.setGeometry(QtCore.QRect(29, 49, 981, 401))
+        self.scrollArea.setWidgetResizable(True)
+        self.scrollArea.setObjectName("scrollArea")
+        self.scrollAreaWidgetContents = QtWidgets.QWidget()
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 979, 399))
+        self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
+        self.tableWidget = QtWidgets.QTableWidget(self.scrollAreaWidgetContents)
+        self.tableWidget.setGeometry(QtCore.QRect(-5, 1, 991, 401))
+        self.tableWidget.setObjectName("tableWidget")
+        self.tableWidget.setColumnCount(5)
+        self.tableWidget.setRowCount(0)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setHorizontalHeaderItem(0, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setHorizontalHeaderItem(1, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setHorizontalHeaderItem(2, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setHorizontalHeaderItem(3, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setHorizontalHeaderItem(4, item)
+        self.tableWidget.horizontalHeader().setDefaultSectionSize(196)
+        self.scrollArea.setWidget(self.scrollAreaWidgetContents)
+        self.ProductSearch = QtWidgets.QPushButton(self.centralwidget)
+        self.ProductSearch.setGeometry(QtCore.QRect(450, 520, 161, 51))
+        self.ProductSearch.setObjectName("ProductSearch")
+        self.backoff = QtWidgets.QPushButton(self.centralwidget)
+        self.backoff.setGeometry(QtCore.QRect(20, 10, 31, 31))
+        self.backoff.setObjectName("backoff")
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1045, 22))
+        self.menubar.setObjectName("menubar")
+        self.menuGo_Back = QtWidgets.QMenu(self.menubar)
+        self.menuGo_Back.setTitle("")
+        self.menuGo_Back.setObjectName("menuGo_Back")
+        MainWindow.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        self.statusbar.setObjectName("statusbar")
+        MainWindow.setStatusBar(self.statusbar)
+        self.menubar.addAction(self.menuGo_Back.menuAction())
+        _translate = QtCore.QCoreApplication.translate
+        self.sno_auto.setText(_translate("MainWindow", "     (auto)"))
+        self.prodId.setText(_translate("MainWindow", "Product ID"))
+        self.prodNameEnter.setText(_translate("MainWindow", "Product Name"))
+        self.QuantEdit.setText(_translate("MainWindow", "Quantity"))
+        self.PPerProd.setText(_translate("MainWindow", "Price per Product"))
+
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.label.setText(_translate("MainWindow", "Welcome,"))
+        self.username_Label.setText(_translate("MainWindow", "User"))
+        self.timeDate.setText(_translate("MainWindow", "00-00-0000 00 : 00 : 00"))
+
+        self.InventoryUpdate.setText(_translate("MainWindow", "Update Inventory"))
+        self.remProduct.setText(_translate("MainWindow", "Remove Product(s)"))
+        item = self.tableWidget.horizontalHeaderItem(0)
+        item.setText(_translate("MainWindow", "S No"))
+        item = self.tableWidget.horizontalHeaderItem(1)
+        item.setText(_translate("MainWindow", "Product ID"))
+        item = self.tableWidget.horizontalHeaderItem(2)
+        item.setText(_translate("MainWindow", "Product Name"))
+        item = self.tableWidget.horizontalHeaderItem(3)
+        item.setText(_translate("MainWindow", "Quantity"))
+        item = self.tableWidget.horizontalHeaderItem(4)
+        item.setText(_translate("MainWindow", "Price per Product"))
+        self.ProductSearch.setText(_translate("MainWindow", "Search Product"))
+        self.backoff.setText(_translate("MainWindow", "<"))
+        self.loaddata()
+        now = datetime.datetime.now()
+        self.timeDate.setText(_translate("Dialog",now.strftime("%Y-%m-%d %H:%M:%S"), None))
+
+    def insertInto(self):
+        connection = MySQLdb.connect('127.0.0.1', 'root', '','inv_bill_mgmt')
+        cursor = connection.cursor()
+        sno = self.tableWidget.rowCount() + 1
+
+
+        pid = str(self.prodId.text())
+        pname = str(self.prodNameEnter.text())
+        quant = int(self.QuantEdit.text())
+        ppu = int(self.PPerProd.text())
+        sql = "INSERT INTO `inventory_maincommit`(`S No`, `Product ID`, `Product Name`, `Quantity`, `PPU`) VALUES ('{}','{}','{}','{}','{}')".format(sno,pid,pname,quant,ppu)
+        cursor.execute(sql)
+        connection.commit()
+        results = cursor.fetchall()
+        self.tableWidget.setRowCount(0)
+        for r,d in enumerate(results):
+            self.tableWidget.insertRow(r)
+            for c,cd in enumerate(d):
+                self.tableWidget.setItem(r,c,QtWidgets.QTableWidgetItem(str(cd)))
+                #a = self.dataTable.item(0,3).text()
+                #b = self.dataTable.item(0,4).text()
+                #self.dataTable.setItem(str(int(a)*int(b)))
+        cursor.close()
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+
+    timer = QtCore.QTimer(MainWindow)
+    timer.timeout.connect(lambda: ui.retranslateUi(MainWindow))
+    timer.start(1000)
+
+
+    MainWindow.show()
+    sys.exit(app.exec_())
+
